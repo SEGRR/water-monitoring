@@ -1,0 +1,1061 @@
+[
+    {
+        "id": "d57dfb7db94e626c",
+        "type": "tab",
+        "label": "data out",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "31bdf70a3aaeb68b",
+        "type": "tab",
+        "label": "MQTT in",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "0545bec558c421e9",
+        "type": "mongodb",
+        "hostname": "cluster0.tkske.mongodb.net",
+        "topology": "dnscluster",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "sensor-data",
+        "name": "MongoDB ATLAS"
+    },
+    {
+        "id": "1b96bb09e5e7071a",
+        "type": "mqtt-broker",
+        "name": "HiveMQ",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "5",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "62c3852a73132b3d",
+        "type": "mongodb",
+        "hostname": "127.0.0.1",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "sensor-data",
+        "name": ""
+    },
+    {
+        "id": "9f994ce6380c9c88",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "45eff31f594bec2d",
+        "type": "mongodb",
+        "hostname": "127.0.0.1",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "sensor-data",
+        "name": ""
+    },
+    {
+        "id": "f9477f8b2745550a",
+        "type": "mqtt-broker",
+        "name": "private broker",
+        "broker": "38830965daeb464193431e0bc6fb19a0.s1.eu.hivemq.cloud",
+        "port": "8883",
+        "tls": "",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "4723e6357b0cf006",
+        "type": "websocket-listener",
+        "path": "/ws/data",
+        "wholemsg": "false"
+    },
+    {
+        "id": "305b091a4465bd3f",
+        "type": "mqtt-broker",
+        "name": "a",
+        "broker": "broker.emqx.io",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "d7607879fcbde842",
+        "type": "websocket-client",
+        "path": "ws://localhost:1880/ws/data",
+        "tls": "",
+        "wholemsg": "false",
+        "hb": "0",
+        "subprotocol": "",
+        "headers": []
+    },
+    {
+        "id": "1af4803a145357b5",
+        "type": "mongodb in",
+        "z": "d57dfb7db94e626c",
+        "mongodb": "0545bec558c421e9",
+        "name": "past_data",
+        "collection": "water-sensor-data",
+        "operation": "find",
+        "x": 840,
+        "y": 100,
+        "wires": [
+            [
+                "32e13165357e1859",
+                "bba21b36c4c71eff"
+            ]
+        ]
+    },
+    {
+        "id": "068d7592e4027a1c",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "Decode request",
+        "func": "const moment = global.get('moment') || require('moment');\n// Extract the numeric value and the unit from the string\nlet {range , productId , limit} = msg.req.body;\nconst [value, unit] = range.split('-');\n\n// Ensure value is an integer\nconst num = parseInt(value, 10);\n\n// Get the current date and time\nconst currentDate = moment();\n\n// Initialize the target date based on the unit\nlet targetDate;\n\nswitch (unit) {\n    case 'd': // Days\n        targetDate = currentDate.subtract(num, 'days');\n        break;\n    case 'm': // Months\n        targetDate = currentDate.subtract(num, 'months');\n        break;\n    case 'y': // Years\n        targetDate = currentDate.subtract(num, 'years');\n        break;\n    default:\n        throw new Error('Invalid unit provided. Use \"d\" for days, \"m\" for months, or \"y\" for years.');\n}\n\nlet createdAt = {\n    $gte: targetDate.toDate(), // Documents with date greater than or equal to the target date\n    $lte: currentDate.toDate() // Documents with date less than or equal to the current date\n}\n\n// Return the MongoDB query object to find documents within the specified date range\n// msg.payload = `db.water-sensor-data.find({productId:${productId}, createdAt:${createdAt}})`;\nmsg.payload = {\n   productId                      // Limit to 10 documents\n};\nmsg.filter = {createdAt}\nmsg.sort = {timestamp:-1}\nmsg.limit = limit || 10;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 80,
+        "wires": [
+            [
+                "1fa23b70d61ec739",
+                "1af4803a145357b5"
+            ]
+        ]
+    },
+    {
+        "id": "1fa23b70d61ec739",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "32e13165357e1859",
+        "type": "http response",
+        "z": "d57dfb7db94e626c",
+        "name": "http response",
+        "statusCode": "",
+        "headers": {},
+        "x": 1080,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "df500f22fabd59d1",
+        "type": "http in",
+        "z": "d57dfb7db94e626c",
+        "name": "",
+        "url": "/api/data",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 80,
+        "y": 260,
+        "wires": [
+            [
+                "a99ee30c8ff7eb84"
+            ]
+        ]
+    },
+    {
+        "id": "bba21b36c4c71eff",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "6cea87c49261787d",
+        "type": "catch",
+        "z": "d57dfb7db94e626c",
+        "name": "Error on Request",
+        "scope": null,
+        "uncaught": false,
+        "x": 340,
+        "y": 760,
+        "wires": [
+            [
+                "60cac6c5b17cfb89",
+                "error_handler"
+            ]
+        ]
+    },
+    {
+        "id": "805fb60920724c11",
+        "type": "http in",
+        "z": "d57dfb7db94e626c",
+        "name": "",
+        "url": "/api/data",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 420,
+        "wires": [
+            [
+                "94863b23abb46e8a",
+                "b12fb19a0cac8189"
+            ]
+        ]
+    },
+    {
+        "id": "ecb9c580a26f721b",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "Days Count",
+        "func": "const {productId} = msg.req.query;\n\n\nlet query = msg.payload = [\n    {\n        // Match documents for the given productId\n        $match: {\n            productId: productId\n        }\n    },\n    {\n        // Project a new field that extracts the date (year, month, day) from the timestamp\n        $project: {\n            date: {\n                $dateToString: {\n                    format: \"%Y-%m-%d\",\n                    date: \"$timestamp\"\n                }\n            }\n        }\n    },\n    {\n        // Group by the date field and count the number of frames (documents) per day\n        $group: {\n            _id: \"$date\",\n            totalFrames: { $sum: 1 }\n        }\n    },\n    {\n        // Project the result to rename _id to date\n        $project: {\n            _id: 0, // Suppress the _id field\n            date: \"$_id\", // Rename _id to date\n            totalFrames: 1 // Keep the totalFrames field\n        }\n    },\n    {\n        // Optionally sort the result by date in ascending order\n        $sort: { date: 1 }\n    }\n];\n\nmsg.payload = query\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 420,
+        "wires": [
+            [
+                "61bb8e0c2001cf45"
+            ]
+        ]
+    },
+    {
+        "id": "61bb8e0c2001cf45",
+        "type": "mongodb in",
+        "z": "d57dfb7db94e626c",
+        "mongodb": "0545bec558c421e9",
+        "name": "count distinct days",
+        "collection": "water-sensor-data",
+        "operation": "aggregate",
+        "x": 710,
+        "y": 420,
+        "wires": [
+            [
+                "d1cd2908a2c6813d",
+                "1198de9ad10da57b"
+            ]
+        ]
+    },
+    {
+        "id": "60cac6c5b17cfb89",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 10",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "error",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "d1cd2908a2c6813d",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 11",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "1198de9ad10da57b",
+        "type": "http response",
+        "z": "d57dfb7db94e626c",
+        "name": "Distinctdays",
+        "statusCode": "",
+        "headers": {},
+        "x": 970,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "94863b23abb46e8a",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 12",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "req",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 280,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "ba693de4e6648022",
+        "type": "http in",
+        "z": "d57dfb7db94e626c",
+        "name": "",
+        "url": "/api/devices",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 172.1999969482422,
+        "y": 556.3999633789062,
+        "wires": [
+            [
+                "7154dbecc23dba79",
+                "8f3be1474aed83cb"
+            ]
+        ]
+    },
+    {
+        "id": "7154dbecc23dba79",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "Devices list",
+        "func": "msg.payload = [\n    {\n        // Sort all documents by timestamp in descending order (most recent first)\n        $sort: { timestamp: -1 }\n    },\n    {\n        // Group by productId and get the first document in each group (which will be the most recent due to the sort)\n        $group: {\n            _id: \"$productId\",\n            latestDocument: { $first: \"$$ROOT\" },\n            maxtotalFlow:{$max:'$totalFlow'}  // $$ROOT gives the entire document\n        }\n    }\n];\n\n// Return the message object for MongoDB node\nreturn msg;\n\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 362.1999969482422,
+        "y": 556.3999633789062,
+        "wires": [
+            [
+                "c05c8dcc18e24ae8",
+                "dd04bc35ae41db5e"
+            ]
+        ]
+    },
+    {
+        "id": "c05c8dcc18e24ae8",
+        "type": "mongodb in",
+        "z": "d57dfb7db94e626c",
+        "mongodb": "0545bec558c421e9",
+        "name": "Device List",
+        "collection": "water-sensor-data",
+        "operation": "aggregate",
+        "x": 582.1999969482422,
+        "y": 556.3999633789062,
+        "wires": [
+            [
+                "47057e1eed237b9a",
+                "a331438df118176e"
+            ]
+        ]
+    },
+    {
+        "id": "47057e1eed237b9a",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 13",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "a331438df118176e",
+        "type": "http response",
+        "z": "d57dfb7db94e626c",
+        "name": "Distinctdays",
+        "statusCode": "",
+        "headers": {},
+        "x": 842.1999969482422,
+        "y": 556.3999633789062,
+        "wires": []
+    },
+    {
+        "id": "dd04bc35ae41db5e",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 14",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "15b0bbeff54e443c",
+        "type": "mongodb in",
+        "z": "d57dfb7db94e626c",
+        "mongodb": "0545bec558c421e9",
+        "name": "past_data",
+        "collection": "water-sensor-data",
+        "operation": "aggregate",
+        "x": 780,
+        "y": 260,
+        "wires": [
+            [
+                "2aa4a6458d6cc68a",
+                "19b39ce33d2384d4"
+            ]
+        ]
+    },
+    {
+        "id": "0fa28cff601054af",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "Decode request",
+        "func": "// Assuming date is provided in \"YYYY-MM-DD\" format\nlet {productId , date , limit,page} = msg.req.body;\n\n\n// Parse the start and end times for the given date\nlet startDate = new Date(date + \"T00:00:00.000Z\");  // Start of the day\nlet endDate = new Date(date + \"T23:59:59.999Z\");    // End of the day\n\n\n// MongoDB query\nconst skip = (page - 1) * limit;\n\n// MongoDB query to match productId and date, and apply pagination\nmsg.payload = [\n    {\n        // Match documents based on the productId and date\n        $match: {\n            productId: productId,\n            timestamp: {\n                $gte: new Date(date + \"T00:00:00.000Z\"), // Start of the day\n                $lte: new Date(date + \"T23:59:59.999Z\")  // End of the day\n            }\n        }\n    },\n    {\n        // Sort by timestamp in ascending order (you can change to -1 for descending)\n        $sort: { timestamp: -1 }\n    },\n    {\n        // Skip the first 'n' documents based on the page\n        $skip: skip\n    },\n    {\n        // Limit the number of documents returned to 'limit'\n        $limit: limit\n    },\n    {\n        // Optionally project only necessary fields\n        $project: {\n            _id: 0, // Hide _id if not needed\n            productId: 1,\n            timestamp: 1,\n            currentFlow: 1, // Example field\n            totalFlow: 1, // Example field\n            deviceLabel:1,\n            slaveId:1,\n            gsmRange:1\n        }\n    }\n];\n\n\n// Return the message object to pass the query to MongoDB node\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 260,
+        "wires": [
+            [
+                "a9f5aa9cb389c416",
+                "15b0bbeff54e443c"
+            ]
+        ]
+    },
+    {
+        "id": "a9f5aa9cb389c416",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 15",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "2aa4a6458d6cc68a",
+        "type": "http response",
+        "z": "d57dfb7db94e626c",
+        "name": "http response",
+        "statusCode": "",
+        "headers": {},
+        "x": 1040,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "19b39ce33d2384d4",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 16",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "error_handler",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "Error Handler",
+        "func": "msg.payload = {\n    error: true,\n    message: msg.error.message  // Error message\n};\n // Optional: Set HTTP status code\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 820,
+        "wires": [
+            [
+                "http_error_response"
+            ]
+        ]
+    },
+    {
+        "id": "http_error_response",
+        "type": "http response",
+        "z": "d57dfb7db94e626c",
+        "name": "Error Response",
+        "statusCode": "500",
+        "headers": {},
+        "x": 840,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "a99ee30c8ff7eb84",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "productId Validation",
+        "func": "// Extract body from the HTTP request\nlet { productId, date, limit, page } = msg.req.body;\n\n// Example of required fields\nif (!productId || typeof productId !== 'string') {\n   throw new Error('ProductId is required')\n}\n\nconst regex = /^(?:(?:19|20)\\d{2})-(?:(?:0[1-9]|1[0-2]))-(?:(?:0[1-9]|1\\d|2[0-8])|(?:29|30)(?!(?:-02))|31(?=(?:-01|-03|-05|-07|-08|-10|-12)))$/;\n\nif (!date) {\n   throw new Error(\"date is required body parameter\");\n}\nelse if (!regex.test(date)) {\n   throw new Error(\"Wrong date format. YYYY-MM-DD is required\");\n}\n\nif (!page || typeof page !== 'number' || page < 0) {\n   throw new Error(\"Problem with page atrribute\");\n}\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 260,
+        "wires": [
+            [
+                "0fa28cff601054af"
+            ]
+        ]
+    },
+    {
+        "id": "b12fb19a0cac8189",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "Validation",
+        "func": "// Extract body from the HTTP request\nlet { productId} = msg.req.query;\n\n// Example of required fields\nif (!productId || typeof productId !== 'string') {\n   throw new Error('ProductId is required')\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 420,
+        "wires": [
+            [
+                "ecb9c580a26f721b"
+            ]
+        ]
+    },
+    {
+        "id": "8f3be1474aed83cb",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 17",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "req",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 340,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "104b79cb5781b37a",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "Actual Value",
+        "func": "let productId = msg.productId;\nlet datetime = msg.datetime;\n// given the time of water intake during that day\n// i want to find how much water measured which is  actual_value\n// compare it to form value be written_value\n// calculate deviation\n// the water intake will start after given time, \n//so start measuring from that time till the currentFlow becomes 0\n// or totalFlow becomes greater than given tanker_size value in form \nmsg.payload = [\n    // Step 1: Match records for the given productId and timestamp >= given datetime\n    {\n        $match: {\n            productId: productId,  // Use productId directly\n            timestamp: { $gte: new Date(datetime) }  // Ensure datetime is properly converted\n        }\n     },\n    // // Step 2: Sort in ascending order (chronological order)\n     {\n        $sort: { timestamp: 1 }\n     },\n    // // Step 3: Use $setWindowFields to create cumulative sum, stopping when currentFlow = 0\n   {\n        $setWindowFields: {\n            partitionBy: \"$productId\",\n            sortBy: { timestamp: 1 },\n            output: {\n                cumulativeTotalFlow: {\n                    $sum: \"$currentFlow\",\n                    window: { documents: [\"unbounded\", \"current\"] } // Cumulative sum\n                },\n                 isZeroFlow: {\n                    $min: {\n                        $cond: { if: { $eq: [\"$currentFlow\", 0] }, then: 1, else: 0 }\n                    },\n                    window: { documents: [\"unbounded\", \"current\"] }\n                }\n            }\n        }\n    },\n    // // Step 4: Filter to keep only records before first occurrence of currentFlow = 0\n    {\n        $match: { isZeroFlow: 0 }\n    },\n    // // Step 5: Get the last cumulative total flow before currentFlow = 0\n    {\n        $group: {\n            _id: null,\n            measuredValue: { $last: \"$cumulativeTotalFlow\" } // The final measured value before flow stops\n        }\n    },\n    // // Step 6: Format final output\n    // {\n    //     $project: {\n    //         _id: 0,\n    //         measuredValue: 1\n    //     }\n    // }\n];\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 200,
+        "wires": [
+            [
+                "39d3c53ff820c417",
+                "b25b8c13a27a4725"
+            ]
+        ]
+    },
+    {
+        "id": "39d3c53ff820c417",
+        "type": "mongodb in",
+        "z": "d57dfb7db94e626c",
+        "mongodb": "0545bec558c421e9",
+        "name": "Getting tanker count",
+        "collection": "water-sensor-data",
+        "operation": "aggregate",
+        "x": 500,
+        "y": 200,
+        "wires": [
+            [
+                "21c02983c0991d5b"
+            ]
+        ]
+    },
+    {
+        "id": "21c02983c0991d5b",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 18",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 760,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "da791a0e48f6495a",
+        "type": "inject",
+        "z": "d57dfb7db94e626c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "datetime",
+                "v": "2024-10-12T18:46:57.000+00:00",
+                "vt": "str"
+            },
+            {
+                "p": "productId",
+                "v": "BTP0524002",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 80,
+        "y": 200,
+        "wires": [
+            [
+                "104b79cb5781b37a"
+            ]
+        ]
+    },
+    {
+        "id": "614fa2a1f8b816c1",
+        "type": "comment",
+        "z": "d57dfb7db94e626c",
+        "name": "API ROUTES",
+        "info": "1. POST  http://192.168.13.171:1880/api/data\nBODY\n{\n  \"productId\":\"BTP0524003\",\n  \"date\":\"2024-10-14\",\n  \"limit\":10,\n  \"page\":1\n}\n2. GET  http://192.168.13.171:1880/api/data?productId=\"BTP0524002\"   \n get days of day available to show\n3. GET http://192.168.13.171:1880/api/devices\nget device list with latest data frame\n\n4. POST /api/devices \nRegister new device into system\nBody\n {productId,\n    slaveId,\n    installDate,\n    type,\n    measurementUnit,\n    pipeSize,\n    powerType,\n }\n\n5. GET /api/period?productId=\"\"",
+        "x": 1390,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "b25b8c13a27a4725",
+        "type": "debug",
+        "z": "d57dfb7db94e626c",
+        "name": "debug 19",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "40e85007aff15964",
+        "type": "http in",
+        "z": "d57dfb7db94e626c",
+        "name": "",
+        "url": "/api/periods",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 940,
+        "wires": [
+            [
+                "e307416ce8942297"
+            ]
+        ]
+    },
+    {
+        "id": "e307416ce8942297",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "QUERY PERIODS DATA",
+        "func": "let {productId} = msg.req.query;\nmsg.payload = [\n    // Step 1: Filter data for the given productId\n    { \n        $match: { productId }  \n    },\n\n    // Step 2: Sort Data by Timestamp\n    { \n        $sort: { timestamp: 1 } \n    },\n\n    // Step 3: Use $accumulator to Assign Period IDs Dynamically\n    {\n        $group: {\n            _id: null,\n            readings: {\n                $push: {\n                    timestamp: \"$timestamp\",\n                    currentFlow: \"$currentFlow\",\n                    totalFlow: \"$totalFlow\" // Capture totalFlow for later reference\n                }\n            }\n        }\n    },\n    {\n        $project: {\n            readings: {\n                $reduce: {\n                    input: \"$readings\",\n                    initialValue: {\n                        periods: [],\n                        currentPeriod: [],\n                        lastFlow: 0\n                    },\n                    in: {\n                        periods: {\n                            $concatArrays: [\n                                \"$$value.periods\",\n                                {\n                                    $cond: {\n                                        if: {\n                                            $and: [\n                                                { $eq: [\"$$this.currentFlow\", 0] },\n                                                { $gt: [{ $size: \"$$value.currentPeriod\" }, 0] }\n                                            ]\n                                        },\n                                        then: [\"$$value.currentPeriod\"],\n                                        else: []\n                                    }\n                                }\n                            ]\n                        },\n                        currentPeriod: {\n                            $cond: {\n                                if: { $eq: [\"$$this.currentFlow\", 0] },\n                                then: [],\n                                else: { $concatArrays: [\"$$value.currentPeriod\", [\"$$this\"]] }\n                            }\n                        },\n                        lastFlow: \"$$this.currentFlow\"\n                    }\n                }\n            }\n        }\n    },\n\n    // Step 4: Unwind the extracted periods\n    { \n        $unwind: \"$readings.periods\"\n    },\n\n    // Step 5: Calculate statistics for each period\n    {\n        $project: {\n            startTime: { $arrayElemAt: [\"$readings.periods.timestamp\", 0] },\n            endTime: { $arrayElemAt: [\"$readings.periods.timestamp\", -1] },\n            totalWaterMeasured: { \n                $sum: \"$readings.periods.currentFlow\" \n            },\n            totalFlowAtStart: { $arrayElemAt: [\"$readings.periods.totalFlow\", 0] }, // Capture totalFlow at start\n            totalFlowAtEnd: { $arrayElemAt: [\"$readings.periods.totalFlow\", -1] }, // Capture totalFlow at end\n            avgFlowRate: { \n                $avg: \"$readings.periods.currentFlow\" \n            },\n            maxFlowRate: { \n                $max: \"$readings.periods.currentFlow\" \n            },\n            minFlowRate: { \n                $min: \"$readings.periods.currentFlow\" \n            },\n            readingCount: { \n                $size: \"$readings.periods\" \n            }\n        }\n    },\n\n    // Step 6: Calculate Duration\n    {\n        $project: {\n            startTime: 1,\n            endTime: 1,\n            durationMinutes: { \n                $divide: [\n                    { $subtract: [\"$endTime\", \"$startTime\"] }, \n                    1000 * 60 // Convert milliseconds to minutes\n                ] \n            },\n            totalWaterMeasured: 1,\n            totalFlowAtStart: 1,\n            totalFlowAtEnd: 1,\n            avgFlowRate: 1,\n            maxFlowRate: 1,\n            minFlowRate: 1,\n            readingCount: 1\n        }\n    },\n\n    // Step 7: Sort Periods by Start Time\n    {\n        $sort: { startTime: -1 }\n    }\n  ]\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 940,
+        "wires": [
+            [
+                "082ccd6093f80ce3"
+            ]
+        ]
+    },
+    {
+        "id": "082ccd6093f80ce3",
+        "type": "mongodb in",
+        "z": "d57dfb7db94e626c",
+        "mongodb": "0545bec558c421e9",
+        "name": "PERIODS DATA",
+        "collection": "water-sensor-data",
+        "operation": "aggregate",
+        "x": 680,
+        "y": 940,
+        "wires": [
+            [
+                "40d663a7e26938f8"
+            ]
+        ]
+    },
+    {
+        "id": "40d663a7e26938f8",
+        "type": "http response",
+        "z": "d57dfb7db94e626c",
+        "name": "PERIODS DATA RESPONSE",
+        "statusCode": "",
+        "headers": {},
+        "x": 980,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "e2411ab9d068d0df",
+        "type": "http in",
+        "z": "d57dfb7db94e626c",
+        "name": "",
+        "url": "/api/devices",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 1040,
+        "wires": [
+            [
+                "262977d3f1badb2f"
+            ]
+        ]
+    },
+    {
+        "id": "a7d614db879c92f8",
+        "type": "http response",
+        "z": "d57dfb7db94e626c",
+        "name": "response",
+        "statusCode": "",
+        "headers": {},
+        "x": 720,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "262977d3f1badb2f",
+        "type": "function",
+        "z": "d57dfb7db94e626c",
+        "name": "DEVICE REGISTRATION",
+        "func": "let { productId,slaveId,installDate,type,measurementUnit,pipeSize,powerType } = msg.req.body\n\ninstallDate = new Date(installDate);\npipeSize = Number(pipeSize)\n\nmsg.payload = {\n    productId,\n    slaveId,\n    installDate,\n    type,\n    measurementUnit,\n    pipeSize,\n    powerType,\n};\n\nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 1040,
+        "wires": [
+            [
+                "b160e28bd9f96818",
+                "a7d614db879c92f8"
+            ]
+        ]
+    },
+    {
+        "id": "b160e28bd9f96818",
+        "type": "mongodb out",
+        "z": "d57dfb7db94e626c",
+        "mongodb": "0545bec558c421e9",
+        "name": "ADD NEW DEVICE",
+        "collection": "sensor-metadata",
+        "payonly": true,
+        "upsert": false,
+        "multi": false,
+        "operation": "insert",
+        "x": 750,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "d56b464bb06a6ca7",
+        "type": "function",
+        "z": "31bdf70a3aaeb68b",
+        "name": "frameFormatter",
+        "func": "// Split the frame by commas to extract individual fields\nconst fields = msg.payload.split(',');\n\n// Ensure the frame has the expected number of fields\nif (fields.length !== 10) {\n    throw new Error('Invalid frame format');\n}\n\n// Extract the individual components\n\nconst date = fields[1];                   // Date (DD/MM/YYYY)\nconst time = fields[2];                   // Time (HH:MM:SS)\nconst productId = fields[3];              // Product ID\nconst deviceLabel = fields[4];            // Device Label\nconst gsmRange = parseInt(fields[5], 10); // GSM Range (Integer)\nconst slaveId = parseInt(fields[6], 10);  // Slave ID (Integer)\nconst currentFlow = parseInt(fields[7], 10); // Flow Rate (Integer)\nconst totalFlow = parseFloat(fields[8]); // Net Total Flow (Float)\n\n\n// Combine date and time into a single ISO 8601 format timestamp\nconst timestamp = new Date(`${date.split('/').reverse().join('-')}T${time}.000Z`);\n\n// Create the JSON object with the extracted data\nconst decodedData = {\n    \n    timestamp: timestamp, // Date object in ISO 8601 format\n    productId: productId,\n    deviceLabel: deviceLabel,\n    gsmRange: gsmRange,\n    slaveId: slaveId,\n    currentFlow: currentFlow,\n    totalFlow: totalFlow,\n};\n\nmsg.payload =  decodedData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 120,
+        "wires": [
+            [
+                "d5312b33c84a0c30",
+                "8c0ff5147b884437"
+            ]
+        ]
+    },
+    {
+        "id": "e877d2404ad5b831",
+        "type": "mqtt in",
+        "z": "31bdf70a3aaeb68b",
+        "name": "private broker",
+        "topic": "water-sen-data",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "9f994ce6380c9c88",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 90,
+        "y": 100,
+        "wires": [
+            [
+                "d9e31461ca1a08b2",
+                "d56b464bb06a6ca7"
+            ]
+        ]
+    },
+    {
+        "id": "d5312b33c84a0c30",
+        "type": "mongodb out",
+        "z": "31bdf70a3aaeb68b",
+        "mongodb": "0545bec558c421e9",
+        "name": "insert to db",
+        "collection": "water-sensor-data",
+        "payonly": true,
+        "upsert": false,
+        "multi": false,
+        "operation": "insert",
+        "x": 630,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "d9e31461ca1a08b2",
+        "type": "debug",
+        "z": "31bdf70a3aaeb68b",
+        "name": "debug 6",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 340,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "4326e3e9e8da79a0",
+        "type": "catch",
+        "z": "31bdf70a3aaeb68b",
+        "name": "",
+        "scope": [
+            "d56b464bb06a6ca7",
+            "9afd745a2496487a"
+        ],
+        "uncaught": false,
+        "x": 570,
+        "y": 40,
+        "wires": [
+            [
+                "b955c24ac3f0b8c0"
+            ]
+        ]
+    },
+    {
+        "id": "b955c24ac3f0b8c0",
+        "type": "debug",
+        "z": "31bdf70a3aaeb68b",
+        "name": "Error Debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "err",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "8c0ff5147b884437",
+        "type": "debug",
+        "z": "31bdf70a3aaeb68b",
+        "name": "Frame Reciever",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 220,
+        "wires": []
+    }
+]
