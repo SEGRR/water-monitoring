@@ -7,6 +7,8 @@ COPY flows.json /data/flows.json
 # RUN npm install node-red-node-<package>
 RUN npm install node-red-node-mongodb
 # Expose the default Node-RED port
+
+
 EXPOSE 1880
 
 # Start Node-RED
