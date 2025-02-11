@@ -208,6 +208,21 @@
                 "name": "MONGO_PASS",
                 "value": "zXr2DcOZj9m61Cnm",
                 "type": "str"
+            },
+            {
+                "name": "CLOUDINARY_API_KEY",
+                "value": "947655143582297",
+                "type": "str"
+            },
+            {
+                "name": "CLOUDINARY_SECRET",
+                "value": "3XfxtefvoGz8llwPOJ4vJOtrGr0",
+                "type": "str"
+            },
+            {
+                "name": "CLOUDINARY_CLOUD_NAME",
+                "value": "djnhzqluc",
+                "type": "str"
             }
         ]
     },
@@ -1070,11 +1085,11 @@
         "type": "http in",
         "z": "f32545335c110520",
         "name": "",
-        "url": "/api/devices/update",
+        "url": "/api/devices/:productId",
         "method": "patch",
         "upload": false,
         "swaggerDoc": "",
-        "x": 190,
+        "x": 200,
         "y": 280,
         "wires": [
             [
@@ -1113,7 +1128,7 @@
         "type": "function",
         "z": "f32545335c110520",
         "name": "UPDATE DEVICE QUERY",
-        "func": "\nmsg.query = {\n    productId:msg.req.body.productId\n}\nif(msg.req.body.installDate != undefined)\nmsg.req.body.installDate  = new Date(msg.req.body.installDate)\n\nlet fields = msg.req.body;\ndelete fields.productId;\n\nmsg.payload =  { $set: fields }\n\nreturn msg;",
+        "func": "\nmsg.query = {\n    productId:msg.req.params.productId\n}\nif(msg.req.body.installDate != undefined)\nmsg.req.body.installDate  = new Date(msg.req.body.installDate)\n\nlet fields = msg.req.body;\ndelete fields.productId;\n\nmsg.payload =  { $set: fields }\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -1178,11 +1193,11 @@
         "type": "http in",
         "z": "f32545335c110520",
         "name": "",
-        "url": "/api/devices/delete",
+        "url": "/api/devices/:productId",
         "method": "delete",
         "upload": false,
         "swaggerDoc": "",
-        "x": 170,
+        "x": 180,
         "y": 420,
         "wires": [
             [
@@ -1221,7 +1236,7 @@
         "type": "function",
         "z": "f32545335c110520",
         "name": "DELETE DEVICE QUERY",
-        "func": "msg.query = {\n    productId:msg.req.body.productId\n}\nmsg.payload = msg.req.body\nreturn msg;",
+        "func": "msg.query = {\n    productId:msg.req.params.productId\n}\nmsg.payload = msg.req.body\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -1834,7 +1849,7 @@
                 "module": "fs"
             }
         ],
-        "x": 550,
+        "x": 610,
         "y": 1760,
         "wires": [
             [
@@ -1851,47 +1866,13 @@
         "name": "ADD VEHICLECOUNT FORM",
         "collection": "vehicleCount",
         "operation": "insert",
-        "x": 830,
+        "x": 870,
         "y": 1760,
         "wires": [
             [
                 "f1b128d35ff36d3b"
             ]
         ]
-    },
-    {
-        "id": "020638a7e2fbea3f",
-        "type": "debug",
-        "z": "f32545335c110520",
-        "name": "debug 20",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 540,
-        "y": 1820,
-        "wires": []
-    },
-    {
-        "id": "7914b0d909e5852b",
-        "type": "debug",
-        "z": "f32545335c110520",
-        "name": "debug 21",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "req.files",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 340,
-        "y": 1840,
-        "wires": []
     },
     {
         "id": "f58f53f9ef4d9ea3",
@@ -1962,20 +1943,19 @@
         "id": "ab100bfc6ec8ac01",
         "type": "function",
         "z": "f32545335c110520",
-        "name": "function 15",
-        "func": "const cloudinary = global.get('cloudinary');\nvar image = msg.req.files[0];\nasync function uploadFile() {\n\n    // Configuration\n    cloudinary.config({ \n        cloud_name: 'djnhzqluc', \n        api_key: '947655143582297', \n        api_secret: '3XfxtefvoGz8llwPOJ4vJOtrGr0' // Click 'View API Keys' above to copy your API secret\n    });\n    \n    // Upload an image\nconst uploadResult = await new Promise((resolve) => {\n    cloudinary.v2.uploader.upload_stream((error, uploadResult) => {\n        return resolve(uploadResult);\n    }).end(image.buffer);});\n    \n    return uploadResult;\n}\nmsg.uploadResult = await uploadFile();\nreturn msg;\n",
+        "name": "upload image to cloudinary",
+        "func": "const cloudinary = global.get('cloudinary');\nvar image = msg.req.files[0];\nasync function uploadFile() {\n\n    // Configuration\n    cloudinary.config({ \n        cloud_name: env.get('CLOUDINARY_CLOUD_NAME'), \n        api_key: env.get('CLOUDINARY_API_KEY'), \n        api_secret: env.get('CLOUDINARY_SECRET') // Click 'View API Keys' above to copy your API secret\n    });\n    \n    // Upload an image\nconst uploadResult = await new Promise((resolve) => {\n    cloudinary.v2.uploader.upload_stream((error, uploadResult) => {\n        return resolve(uploadResult);\n    }).end(image.buffer);});\n    \n    return uploadResult;\n}\nmsg.uploadResult = await uploadFile();\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
+        "x": 380,
         "y": 1760,
         "wires": [
             [
-                "4271b56e2a2a078f",
-                "020638a7e2fbea3f"
+                "4271b56e2a2a078f"
             ]
         ]
     },
@@ -2020,6 +2000,71 @@
         "wires": [
             [
                 "60eac29d232fc9b6"
+            ]
+        ]
+    },
+    {
+        "id": "d668142c3ff0af25",
+        "type": "inject",
+        "z": "f32545335c110520",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 2260,
+        "wires": [
+            [
+                "d537a40aa3511299"
+            ]
+        ]
+    },
+    {
+        "id": "83e8c116e9286c73",
+        "type": "debug",
+        "z": "f32545335c110520",
+        "name": "debug 22",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 2260,
+        "wires": []
+    },
+    {
+        "id": "d537a40aa3511299",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 16",
+        "func": "msg.payload = env.get('MONGO_UNAME');\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 2260,
+        "wires": [
+            [
+                "83e8c116e9286c73"
             ]
         ]
     }
