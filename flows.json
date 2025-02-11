@@ -212,6 +212,14 @@
         ]
     },
     {
+        "id": "65180d6e6ac23d47",
+        "type": "mongodb3",
+        "uri": "mongodb+srv://segrr2003:zXr2DcOZj9m61Cnm@cluster0.tkske.mongodb.net/sensor-data?retryWrites=true&w=majority&appName=Cluster0",
+        "name": "MONGO ATLAS",
+        "options": "",
+        "parallelism": "0"
+    },
+    {
         "id": "90e68b95f6bc7796",
         "type": "function",
         "z": "7b83fea6115b1c9d",
@@ -415,72 +423,6 @@
         "wires": []
     },
     {
-        "id": "1af4803a145357b5",
-        "type": "mongodb in",
-        "z": "d57dfb7db94e626c",
-        "mongodb": "0545bec558c421e9",
-        "name": "past_data",
-        "collection": "water-sensor-data",
-        "operation": "find",
-        "x": 840,
-        "y": 100,
-        "wires": [
-            [
-                "32e13165357e1859",
-                "bba21b36c4c71eff"
-            ]
-        ]
-    },
-    {
-        "id": "068d7592e4027a1c",
-        "type": "function",
-        "z": "d57dfb7db94e626c",
-        "name": "Decode request",
-        "func": "const moment = global.get('moment') || require('moment');\n// Extract the numeric value and the unit from the string\nlet {range , productId , limit} = msg.req.body;\nconst [value, unit] = range.split('-');\n\n// Ensure value is an integer\nconst num = parseInt(value, 10);\n\n// Get the current date and time\nconst currentDate = moment();\n\n// Initialize the target date based on the unit\nlet targetDate;\n\nswitch (unit) {\n    case 'd': // Days\n        targetDate = currentDate.subtract(num, 'days');\n        break;\n    case 'm': // Months\n        targetDate = currentDate.subtract(num, 'months');\n        break;\n    case 'y': // Years\n        targetDate = currentDate.subtract(num, 'years');\n        break;\n    default:\n        throw new Error('Invalid unit provided. Use \"d\" for days, \"m\" for months, or \"y\" for years.');\n}\n\nlet createdAt = {\n    $gte: targetDate.toDate(), // Documents with date greater than or equal to the target date\n    $lte: currentDate.toDate() // Documents with date less than or equal to the current date\n}\n\n// Return the MongoDB query object to find documents within the specified date range\n// msg.payload = `db.water-sensor-data.find({productId:${productId}, createdAt:${createdAt}})`;\nmsg.payload = {\n   productId                      // Limit to 10 documents\n};\nmsg.filter = {createdAt}\nmsg.sort = {timestamp:-1}\nmsg.limit = limit || 10;\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 640,
-        "y": 80,
-        "wires": [
-            [
-                "1fa23b70d61ec739",
-                "1af4803a145357b5"
-            ]
-        ]
-    },
-    {
-        "id": "1fa23b70d61ec739",
-        "type": "debug",
-        "z": "d57dfb7db94e626c",
-        "name": "debug 5",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 720,
-        "y": 20,
-        "wires": []
-    },
-    {
-        "id": "32e13165357e1859",
-        "type": "http response",
-        "z": "d57dfb7db94e626c",
-        "name": "http response",
-        "statusCode": "",
-        "headers": {},
-        "x": 1080,
-        "y": 100,
-        "wires": []
-    },
-    {
         "id": "df500f22fabd59d1",
         "type": "http in",
         "z": "d57dfb7db94e626c",
@@ -496,23 +438,6 @@
                 "a99ee30c8ff7eb84"
             ]
         ]
-    },
-    {
-        "id": "bba21b36c4c71eff",
-        "type": "debug",
-        "z": "d57dfb7db94e626c",
-        "name": "debug 9",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 940,
-        "y": 20,
-        "wires": []
     },
     {
         "id": "6cea87c49261787d",
@@ -921,7 +846,7 @@
         "type": "function",
         "z": "d57dfb7db94e626c",
         "name": "Actual Value",
-        "func": "let productId = msg.productId;\nlet datetime = msg.datetime;\n// given the time of water intake during that day\n// i want to find how much water measured which is  actual_value\n// compare it to form value be written_value\n// calculate deviation\n// the water intake will start after given time, \n//so start measuring from that time till the currentFlow becomes 0\n// or totalFlow becomes greater than given tanker_size value in form \nmsg.payload = [\n    // Step 1: Match records for the given productId and timestamp >= given datetime\n    {\n        $match: {\n            productId: productId,  // Use productId directly\n            timestamp: { $gte: new Date(datetime) }  // Ensure datetime is properly converted\n        }\n     },\n    // // Step 2: Sort in ascending order (chronological order)\n     {\n        $sort: { timestamp: 1 }\n     },\n    // // Step 3: Use $setWindowFields to create cumulative sum, stopping when currentFlow = 0\n   {\n        $setWindowFields: {\n            partitionBy: \"$productId\",\n            sortBy: { timestamp: 1 },\n            output: {\n                cumulativeTotalFlow: {\n                    $sum: \"$currentFlow\",\n                    window: { documents: [\"unbounded\", \"current\"] } // Cumulative sum\n                },\n                 isZeroFlow: {\n                    $min: {\n                        $cond: { if: { $eq: [\"$currentFlow\", 0] }, then: 1, else: 0 }\n                    },\n                    window: { documents: [\"unbounded\", \"current\"] }\n                }\n            }\n        }\n    },\n    // // Step 4: Filter to keep only records before first occurrence of currentFlow = 0\n    {\n        $match: { isZeroFlow: 0 }\n    },\n    // // Step 5: Get the last cumulative total flow before currentFlow = 0\n    {\n        $group: {\n            _id: null,\n            measuredValue: { $last: \"$cumulativeTotalFlow\" } // The final measured value before flow stops\n        }\n    },\n    // // Step 6: Format final output\n    // {\n    //     $project: {\n    //         _id: 0,\n    //         measuredValue: 1\n    //     }\n    // }\n];\n\nreturn msg;\n",
+        "func": "let productId = msg.productId;\nlet datetime = msg.datetime;\n// given the time of water intake during that day\n// i want to find how much water measured which is  actual_value\n// compare it to form value be written_value\n// calculate deviation\n// the water intake will start after given time, \n//so start measuring from that time till the currentFlow becomes 0\n// or totalFlow becomes greater than given tanker_size value in form \nmsg.payload = [\n    // Step 1: Match records for the given productId and timestamp >= given datetime\n    {\n        $match: {\n            productId: productId,  // Use productId directly\n            timestamp: { $gte: new Date(datetime) }  // Ensure datetime is properly converted\n        }\n     },\n    // // Step 2: Sort in ascending order (chronological order)\n     {\n        $sort: { timestamp: 1 }\n     },\n    // // Step 3: Use $setWindowFields to create cumulative sum, stopping when currentFlow = 0\n   {\n        $setWindowFields: {\n            partitionBy: \"$productId\",\n            sortBy: { timestamp: 1 },\n            output: {\n                cumulativeTotalFlow: {\n                    $sum: \"$currentFlow\",\n                    window: { documents: [\"unbounded\", \"current\"] } // Cumulative sum\n                },\n                 isZeroFlow: {\n                    $min: {\n                        $cond: { if: { $eq: [\"$currentFlow\", 0] }, then: 1, else: 0 }\n                    },\n                    window: { documents: [\"unbounded\", \"current\"] }\n                }\n            }\n        }\n    },\n    // // Step 4: Filter to keep only records before first occurrence of currentFlow = 0\n    {\n        $match: { isZeroFlow: 0 }\n    },\n    // // Step 5: Get the last cumulative total flow before currentFlow = 0\n    {\n        $group: {\n            _id: null,\n            measuredValue: { $last: \"$cumulativeTotalFlow\" } // The final measured value before flow stops\n        }\n    },\n    // // Step 6: Format final output\n    // {\n    //     $project: {\n    //         _id: 0,\n    //         measuredValue: 1\n    //     }\n    // }\n];\nmsg.operation = \"aggregation\";\nreturn msg;\n",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -945,7 +870,7 @@
         "name": "Getting tanker count",
         "collection": "water-sensor-data",
         "operation": "aggregate",
-        "x": 500,
+        "x": 600,
         "y": 200,
         "wires": [
             [
@@ -966,7 +891,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 760,
+        "x": 840,
         "y": 200,
         "wires": []
     },
@@ -997,8 +922,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 80,
-        "y": 140,
+        "x": 120,
+        "y": 160,
         "wires": [
             [
                 "104b79cb5781b37a"
@@ -1397,20 +1322,6 @@
         "wires": []
     },
     {
-        "id": "c20af7fbc85602e6",
-        "type": "mongodb in",
-        "z": "f32545335c110520",
-        "mongodb": "0545bec558c421e9",
-        "name": "",
-        "collection": "sensor-metadata",
-        "operation": "aggregate",
-        "x": 900,
-        "y": 740,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "709d7a553430d488",
         "type": "function",
         "z": "f32545335c110520",
@@ -1427,6 +1338,688 @@
         "wires": [
             [
                 "a31b9d0e83189296"
+            ]
+        ]
+    },
+    {
+        "id": "9f8662c1bd8adce2",
+        "type": "mongodb3 in",
+        "z": "f32545335c110520",
+        "service": "_ext_",
+        "configNode": "65180d6e6ac23d47",
+        "name": "ADD NEW USER",
+        "collection": "users",
+        "operation": "insertOne",
+        "x": 650,
+        "y": 920,
+        "wires": [
+            [
+                "8f5931f1afec450b"
+            ]
+        ]
+    },
+    {
+        "id": "d9c4e5ffedac1b57",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/users",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 240,
+        "y": 920,
+        "wires": [
+            [
+                "3d3c280ab35a134c"
+            ]
+        ]
+    },
+    {
+        "id": "acb4a8fb6af03f0f",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1010,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "3d3c280ab35a134c",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 3",
+        "func": "\nmsg.payload = {registerdOn : new Date(), deviceList:[] , ...msg.req.body}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 920,
+        "wires": [
+            [
+                "9f8662c1bd8adce2"
+            ]
+        ]
+    },
+    {
+        "id": "3eb22c10d86dff54",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/users",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 240,
+        "y": 1020,
+        "wires": [
+            [
+                "63efa7f31b90c9a9"
+            ]
+        ]
+    },
+    {
+        "id": "7f778f5c5546dde6",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 850,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "c5eabfeea34346d2",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/users/:phoneNo",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 230,
+        "y": 1120,
+        "wires": [
+            [
+                "a086784619a156c9"
+            ]
+        ]
+    },
+    {
+        "id": "d84a03bb3a5b182c",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 850,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "a086784619a156c9",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 5",
+        "func": "let phoneNumber = msg.req.params.phoneNo\nmsg.payload = {phoneNumber}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1120,
+        "wires": [
+            [
+                "b7f00c52cec520ab"
+            ]
+        ]
+    },
+    {
+        "id": "63efa7f31b90c9a9",
+        "type": "mongodb in",
+        "z": "f32545335c110520",
+        "mongodb": "0545bec558c421e9",
+        "name": "GET USERS LIST",
+        "collection": "users",
+        "operation": "find",
+        "x": 590,
+        "y": 1020,
+        "wires": [
+            [
+                "7f778f5c5546dde6"
+            ]
+        ]
+    },
+    {
+        "id": "b7f00c52cec520ab",
+        "type": "mongodb in",
+        "z": "f32545335c110520",
+        "mongodb": "0545bec558c421e9",
+        "name": "GET SINGLE USER",
+        "collection": "users",
+        "operation": "find",
+        "x": 640,
+        "y": 1120,
+        "wires": [
+            [
+                "d84a03bb3a5b182c"
+            ]
+        ]
+    },
+    {
+        "id": "9df4d49489d4e702",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/users/:phoneNo",
+        "method": "patch",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 200,
+        "y": 1240,
+        "wires": [
+            [
+                "8a47f7bdb333631f"
+            ]
+        ]
+    },
+    {
+        "id": "54724a6bf363b028",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1110,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "8a47f7bdb333631f",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 6",
+        "func": "let phoneNumber = msg.req.params.phoneNo\nmsg.payload = [{phoneNumber} , {$set : msg.req.body} , {returnOriginal:false}]\nmsg.options = { returnOriginal: false };  \nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1240,
+        "wires": [
+            [
+                "d302599f908f9708"
+            ]
+        ]
+    },
+    {
+        "id": "d302599f908f9708",
+        "type": "mongodb3 in",
+        "z": "f32545335c110520",
+        "service": "_ext_",
+        "configNode": "65180d6e6ac23d47",
+        "name": "UPDATE ONE USER DETILS",
+        "collection": "users",
+        "operation": "findOneAndUpdate",
+        "x": 690,
+        "y": 1240,
+        "wires": [
+            [
+                "6a2a5b91d17bfa04"
+            ]
+        ]
+    },
+    {
+        "id": "6a2a5b91d17bfa04",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 7",
+        "func": "msg.payload = msg.payload.value\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 1240,
+        "wires": [
+            [
+                "54724a6bf363b028"
+            ]
+        ]
+    },
+    {
+        "id": "06890ce2bcb718a0",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/users/login",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 1380,
+        "wires": [
+            [
+                "d94a2c360f889da9"
+            ]
+        ]
+    },
+    {
+        "id": "071f1ef31eb29bdf",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1030,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "d94a2c360f889da9",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 8",
+        "func": "let phoneNumber = msg.req.body.phoneNumber;\nmsg.payload = {phoneNumber}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 1380,
+        "wires": [
+            [
+                "8c6cd107c66d89b7"
+            ]
+        ]
+    },
+    {
+        "id": "8c6cd107c66d89b7",
+        "type": "mongodb3 in",
+        "z": "f32545335c110520",
+        "service": "_ext_",
+        "configNode": "65180d6e6ac23d47",
+        "name": "USER LOGIN",
+        "collection": "users",
+        "operation": "findOne",
+        "x": 580,
+        "y": 1380,
+        "wires": [
+            [
+                "3559b12f952694e1"
+            ]
+        ]
+    },
+    {
+        "id": "3559b12f952694e1",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "VERIFY PASSWORD",
+        "func": "let pass = msg.req.body.password;\n\nif (msg.payload.password == undefined){\n    msg.statusCode = 401;\n    msg.payload = \"USER DOES NOT EXIST\";\n}\nelse if(pass != msg.payload.password){\n    msg.statusCode = 401;\n    msg.payload = \"WRONG PASSWORD\";\n}else{\n    msg.statusCode = 200;\n    msg.payload = \"LOGIN SUCCESSFUL\";\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 1380,
+        "wires": [
+            [
+                "071f1ef31eb29bdf"
+            ]
+        ]
+    },
+    {
+        "id": "dfa781ea28916470",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/users/:phoneNumber/devices",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 190,
+        "y": 1500,
+        "wires": [
+            [
+                "4cca405bd5558f56"
+            ]
+        ]
+    },
+    {
+        "id": "4cfa09665a17a9fd",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1070,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "4cca405bd5558f56",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 9",
+        "func": "let deviceList = msg.req.body.deviceList;\nlet phoneNumber = msg.req.params.phoneNumber;\nmsg.payload = [{phoneNumber}, {\n    $addToSet: {\n        deviceList: {\n            $each: deviceList\n        }\n    }},\n    {returnOrignial:false}\n    ];\nmsg.options = {returnOrignial:false};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1500,
+        "wires": [
+            [
+                "850659c9cb5ece47"
+            ]
+        ]
+    },
+    {
+        "id": "850659c9cb5ece47",
+        "type": "mongodb3 in",
+        "z": "f32545335c110520",
+        "service": "_ext_",
+        "configNode": "65180d6e6ac23d47",
+        "name": "ASSIGN DEVICES TO USER",
+        "collection": "users",
+        "operation": "findOneAndUpdate",
+        "x": 670,
+        "y": 1500,
+        "wires": [
+            [
+                "6661a9fb3a891efc"
+            ]
+        ]
+    },
+    {
+        "id": "6661a9fb3a891efc",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 10",
+        "func": "msg.payload = msg.payload.value\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 1500,
+        "wires": [
+            [
+                "4cfa09665a17a9fd"
+            ]
+        ]
+    },
+    {
+        "id": "8f5931f1afec450b",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 11",
+        "func": "msg.payload = msg.payload.ops[0];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 920,
+        "wires": [
+            [
+                "acb4a8fb6af03f0f"
+            ]
+        ]
+    },
+    {
+        "id": "9f27a050a4858848",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/vehicleCount",
+        "method": "post",
+        "upload": true,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 1760,
+        "wires": [
+            [
+                "ab100bfc6ec8ac01"
+            ]
+        ]
+    },
+    {
+        "id": "f1b128d35ff36d3b",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1090,
+        "y": 1760,
+        "wires": []
+    },
+    {
+        "id": "4271b56e2a2a078f",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 12",
+        "func": "// Assuming msg.payload contains binary image data from the HTTP request\n// var image = msg.req.files[0];\nlet {startTime,endTime} = msg.req.body;\n// // Convert the binary image data to base64\n// var base64Image = image.buffer.toString('base64');\n\n// Create a new message with the base64 encoded image and filename\nmsg.payload = {\n    ...msg.req.body,\n    vehiclePhoto: msg.uploadResult.url,\n    startTime:new Date(startTime),\n    endTime:new Date(endTime),\n    entryOn : new Date()\n};\n// msg.payload = base64Image;\nreturn msg;\n\n// {deviceId: Device1, slaveId: Slave1, startTime: 2025-02-11T02:45:00.000, endTime: 2025-02-11T02:45:00.000, vehicleNo: MG 12 SS 1201, waterInLiter: 2000, geoLat: 18.4539152, geoLong: 73.8500244, placeName: Lane Number 6, Pune, India, vehiclePhoto: File: '/data/user/0/com.example.user_application/cache/59eabf35-f205-4497-bd23-1a1454ed29b5/1000072433_watermarked.jpg'}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "fs",
+                "module": "fs"
+            }
+        ],
+        "x": 550,
+        "y": 1760,
+        "wires": [
+            [
+                "5d18c2498d3be462"
+            ]
+        ]
+    },
+    {
+        "id": "5d18c2498d3be462",
+        "type": "mongodb3 in",
+        "z": "f32545335c110520",
+        "service": "_ext_",
+        "configNode": "65180d6e6ac23d47",
+        "name": "ADD VEHICLECOUNT FORM",
+        "collection": "vehicleCount",
+        "operation": "insert",
+        "x": 830,
+        "y": 1760,
+        "wires": [
+            [
+                "f1b128d35ff36d3b"
+            ]
+        ]
+    },
+    {
+        "id": "020638a7e2fbea3f",
+        "type": "debug",
+        "z": "f32545335c110520",
+        "name": "debug 20",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 1820,
+        "wires": []
+    },
+    {
+        "id": "7914b0d909e5852b",
+        "type": "debug",
+        "z": "f32545335c110520",
+        "name": "debug 21",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "req.files",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 340,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "f58f53f9ef4d9ea3",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/vehicleCount/:id",
+        "method": "get",
+        "upload": true,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 2040,
+        "wires": [
+            [
+                "0cef445451731f6f"
+            ]
+        ]
+    },
+    {
+        "id": "102be40222da3fee",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 910,
+        "y": 2040,
+        "wires": []
+    },
+    {
+        "id": "0cef445451731f6f",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 13",
+        "func": "const { ObjectId } = context.global.get('mongodb') // Import ObjectId for MongoDB\n\n// Get ID from request parameters\nvar objectId = msg.req.params.id; \n\n// Validate ObjectId\nif (!ObjectId.isValid(objectId)) {\n    node.error(\"Invalid ObjectId format\", msg);\n    return null;\n}\n\n// Prepare MongoDB query\nmsg.payload = { _id: new ObjectId(objectId) }; // Convert string to ObjectId\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 2040,
+        "wires": [
+            [
+                "04f26db9e99188aa"
+            ]
+        ]
+    },
+    {
+        "id": "04f26db9e99188aa",
+        "type": "mongodb3 in",
+        "z": "f32545335c110520",
+        "service": "_ext_",
+        "configNode": "65180d6e6ac23d47",
+        "name": "RETRIVE VEHICLECOUNT",
+        "collection": "vehicleCount",
+        "operation": "findOne",
+        "x": 640,
+        "y": 2040,
+        "wires": [
+            [
+                "102be40222da3fee"
+            ]
+        ]
+    },
+    {
+        "id": "ab100bfc6ec8ac01",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 15",
+        "func": "const cloudinary = global.get('cloudinary');\nvar image = msg.req.files[0];\nasync function uploadFile() {\n\n    // Configuration\n    cloudinary.config({ \n        cloud_name: 'djnhzqluc', \n        api_key: '947655143582297', \n        api_secret: '3XfxtefvoGz8llwPOJ4vJOtrGr0' // Click 'View API Keys' above to copy your API secret\n    });\n    \n    // Upload an image\nconst uploadResult = await new Promise((resolve) => {\n    cloudinary.v2.uploader.upload_stream((error, uploadResult) => {\n        return resolve(uploadResult);\n    }).end(image.buffer);});\n    \n    return uploadResult;\n}\nmsg.uploadResult = await uploadFile();\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 1760,
+        "wires": [
+            [
+                "4271b56e2a2a078f",
+                "020638a7e2fbea3f"
+            ]
+        ]
+    },
+    {
+        "id": "ca66043271efa1a7",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/vehicleCount",
+        "method": "get",
+        "upload": true,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 2160,
+        "wires": [
+            [
+                "b020d39bde140d75"
+            ]
+        ]
+    },
+    {
+        "id": "60eac29d232fc9b6",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 630,
+        "y": 2160,
+        "wires": []
+    },
+    {
+        "id": "b020d39bde140d75",
+        "type": "mongodb in",
+        "z": "f32545335c110520",
+        "mongodb": "0545bec558c421e9",
+        "name": "GET VEHICLE LIST",
+        "collection": "vehicleCount",
+        "operation": "find",
+        "x": 380,
+        "y": 2160,
+        "wires": [
+            [
+                "60eac29d232fc9b6"
             ]
         ]
     }
