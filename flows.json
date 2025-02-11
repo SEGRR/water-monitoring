@@ -707,7 +707,7 @@
         "type": "function",
         "z": "d57dfb7db94e626c",
         "name": "Decode request",
-        "func": "// Assuming date is provided in \"YYYY-MM-DD\" format\nlet {productId , date , limit,page} = msg.req.body;\n\n\n// Parse the start and end times for the given date\nlet startDate = new Date(date + \"T00:00:00.000Z\");  // Start of the day\nlet endDate = new Date(date + \"T23:59:59.999Z\");    // End of the day\n\n\n// MongoDB query\nconst skip = (page - 1) * limit;\n\n// MongoDB query to match productId and date, and apply pagination\nmsg.payload = [\n    {\n        // Match documents based on the productId and date\n        $match: {\n            productId: productId,\n            timestamp: {\n                $gte: new Date(date + \"T00:00:00.000Z\"), // Start of the day\n                $lte: new Date(date + \"T23:59:59.999Z\")  // End of the day\n            }\n        }\n    },\n    {\n        // Sort by timestamp in ascending order (you can change to -1 for descending)\n        $sort: { timestamp: -1 }\n    },\n    {\n        // Skip the first 'n' documents based on the page\n        $skip: skip\n    },\n    {\n        // Limit the number of documents returned to 'limit'\n        $limit: limit\n    },\n    {\n        // Optionally project only necessary fields\n        $project: {\n            _id: 0, // Hide _id if not needed\n            productId: 1,\n            timestamp: 1,\n            currentFlow: 1, // Example field\n            totalFlow: 1, // Example field\n            deviceLabel:1,\n            slaveId:1,\n            gsmRange:1\n        }\n    }\n];\n\n\n// Return the message object to pass the query to MongoDB node\nreturn msg;",
+        "func": "// Assuming date is provided in \"YYYY-MM-DD\" format\nlet {productId, slaveId , date , limit,page} = msg.req.body;\n\n\n// Parse the start and end times for the given date\nlet startDate = new Date(date + \"T00:00:00.000Z\");  // Start of the day\nlet endDate = new Date(date + \"T23:59:59.999Z\");    // End of the day\n\n\n// MongoDB query\nconst skip = (page - 1) * limit;\n\n// MongoDB query to match productId and date, and apply pagination\nmsg.payload = [\n    {\n        // Match documents based on the productId and date\n        $match: {\n            productId: productId,\n            slaveId,\n            timestamp: {\n                $gte: new Date(date + \"T00:00:00.000Z\"), // Start of the day\n                $lte: new Date(date + \"T23:59:59.999Z\")  // End of the day\n            }\n        }\n    },\n    {\n        // Sort by timestamp in ascending order (you can change to -1 for descending)\n        $sort: { timestamp: -1 }\n    },\n    {\n        // Skip the first 'n' documents based on the page\n        $skip: skip\n    },\n    {\n        // Limit the number of documents returned to 'limit'\n        $limit: limit\n    },\n    {\n        // Optionally project only necessary fields\n        $project: {\n            _id: 0, // Hide _id if not needed\n            productId: 1,\n            timestamp: 1,\n            currentFlow: 1, // Example field\n            totalFlow: 1, // Example field\n            deviceLabel:1,\n            slaveId:1,\n            gsmRange:1\n        }\n    }\n];\n\n\n// Return the message object to pass the query to MongoDB node\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -1306,7 +1306,7 @@
         "type": "function",
         "z": "f32545335c110520",
         "name": "function 1",
-        "func": "msg.payload = msg.req.body;\nmsg.payload.enabled = true;\nif(msg.payload.installDate != \"\")\nmsg.payload.installDate  = new Date(msg.payload.installDate)\nreturn msg;",
+        "func": "msg.payload = msg.req.body;\nmsg.payload.enabled = true;\nif(msg.payload.installDate != \"\")\nmsg.payload.installDate  = new Date(msg.payload.installDate)\nelse\nmsg.payload.installDate  = new Date()\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -2067,5 +2067,125 @@
                 "83e8c116e9286c73"
             ]
         ]
+    },
+    {
+        "id": "d47b509c052cee41",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "ACCESS  DEVICE DETAILS",
+        "func": "// detials of device\n// device ownership\n\nmsg.payload = {\n    productId: msg.req.params.productId\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 760,
+        "wires": [
+            [
+                "4a9cada7ac3ba555"
+            ]
+        ]
+    },
+    {
+        "id": "a38246b0b4b030e1",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/devices/:productId",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 220,
+        "y": 760,
+        "wires": [
+            [
+                "d47b509c052cee41"
+            ]
+        ]
+    },
+    {
+        "id": "4a9cada7ac3ba555",
+        "type": "mongodb in",
+        "z": "f32545335c110520",
+        "mongodb": "0545bec558c421e9",
+        "name": "GET ONE DEVICE DETAILS",
+        "collection": "sensor-metadata",
+        "operation": "find",
+        "x": 820,
+        "y": 760,
+        "wires": [
+            [
+                "665be0af6d6fb2bc"
+            ]
+        ]
+    },
+    {
+        "id": "665be0af6d6fb2bc",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 17",
+        "func": "msg.deviceDetalis = {...msg.payload[0]}\nmsg.payload = {\n    deviceList:{$in: [msg.req.params.productId]}\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 760,
+        "wires": [
+            [
+                "339f7605065741cc"
+            ]
+        ]
+    },
+    {
+        "id": "339f7605065741cc",
+        "type": "mongodb in",
+        "z": "f32545335c110520",
+        "mongodb": "0545bec558c421e9",
+        "name": "GET OWNERSHIP DETAIL",
+        "collection": "users",
+        "operation": "find",
+        "x": 1300,
+        "y": 760,
+        "wires": [
+            [
+                "b20cdd74d7636780"
+            ]
+        ]
+    },
+    {
+        "id": "b20cdd74d7636780",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "MERGE RESULTS",
+        "func": "let user = msg.payload;\nmsg.payload = {deviceDetalis: msg.deviceDetalis , user}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1550,
+        "y": 760,
+        "wires": [
+            [
+                "204bb5a84c7718f6"
+            ]
+        ]
+    },
+    {
+        "id": "204bb5a84c7718f6",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1750,
+        "y": 760,
+        "wires": []
     }
 ]
