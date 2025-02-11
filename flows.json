@@ -1365,7 +1365,7 @@
         "name": "ADD NEW USER",
         "collection": "users",
         "operation": "insertOne",
-        "x": 650,
+        "x": 770,
         "y": 920,
         "wires": [
             [
@@ -1380,13 +1380,13 @@
         "name": "",
         "url": "/api/users",
         "method": "post",
-        "upload": false,
+        "upload": true,
         "swaggerDoc": "",
-        "x": 240,
+        "x": 80,
         "y": 920,
         "wires": [
             [
-                "3d3c280ab35a134c"
+                "f1cea24b7884d9c7"
             ]
         ]
     },
@@ -1397,7 +1397,7 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 1010,
+        "x": 1250,
         "y": 920,
         "wires": []
     },
@@ -1406,14 +1406,14 @@
         "type": "function",
         "z": "f32545335c110520",
         "name": "function 3",
-        "func": "\nmsg.payload = {registerdOn : new Date(), deviceList:[] , ...msg.req.body}\nreturn msg;",
+        "func": "msg.payload = {registerdOn : new Date(), deviceList:[] , ...msg.req.body , ...msg.uploadResult}\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 440,
+        "x": 560,
         "y": 920,
         "wires": [
             [
@@ -1796,7 +1796,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 850,
+        "x": 1030,
         "y": 920,
         "wires": [
             [
@@ -2187,5 +2187,110 @@
         "x": 1750,
         "y": 760,
         "wires": []
+    },
+    {
+        "id": "f1cea24b7884d9c7",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "upload image to cloudinary",
+        "func": "const cloudinary = global.get('cloudinary');\nvar profilePicture = msg.req.files[0];\nvar documentId = msg.req.files[1]\nasync function uploadFile() {\n\n    // Configuration\n    cloudinary.config({ \n        cloud_name: env.get('CLOUDINARY_CLOUD_NAME'), \n        api_key: env.get('CLOUDINARY_API_KEY'), \n        api_secret: env.get('CLOUDINARY_SECRET') // Click 'View API Keys' above to copy your API secret\n    });\n    \n    // Upload an image\nconst profileUploadResult = await new Promise((resolve) => {\n    cloudinary.v2.uploader.upload_stream((error, uploadResult) => {\n        return resolve(uploadResult);\n    }).end(profilePicture.buffer);});\n\nconst documentIdUploadResult = await new Promise((resolve) => {\n    cloudinary.v2.uploader.upload_stream((error, uploadResult) => {\n        return resolve(uploadResult);\n    }).end(profilePicture.buffer);});\n    \n    return {profilePicture:profileUploadResult.url , documentId:documentIdUploadResult.url};\n}\nmsg.uploadResult = await uploadFile();\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 920,
+        "wires": [
+            [
+                "3d3c280ab35a134c"
+            ]
+        ]
+    },
+    {
+        "id": "d6ddc500bca53cba",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/users/:phoneNo/vehicle",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 210,
+        "y": 1300,
+        "wires": [
+            [
+                "18a0e5c3d84318f4"
+            ]
+        ]
+    },
+    {
+        "id": "131690a76c6d17ba",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1110,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "18a0e5c3d84318f4",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 18",
+        "func": "let phoneNumber = msg.req.params.phoneNo\nmsg.payload = {userId:phoneNumber}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 1300,
+        "wires": [
+            [
+                "35d291c39a4777db"
+            ]
+        ]
+    },
+    {
+        "id": "35d291c39a4777db",
+        "type": "mongodb3 in",
+        "z": "f32545335c110520",
+        "service": "_ext_",
+        "configNode": "65180d6e6ac23d47",
+        "name": "GET VEHICLE ENTRY BY USER",
+        "collection": "vehicleCount",
+        "operation": "find.toArray",
+        "x": 700,
+        "y": 1300,
+        "wires": [
+            [
+                "ea325b7722d68ec9"
+            ]
+        ]
+    },
+    {
+        "id": "ea325b7722d68ec9",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 19",
+        "func": "msg.payload = Object.values(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 1300,
+        "wires": [
+            [
+                "131690a76c6d17ba"
+            ]
+        ]
     }
 ]
