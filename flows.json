@@ -1365,7 +1365,7 @@
         "name": "ADD NEW USER",
         "collection": "users",
         "operation": "insertOne",
-        "x": 770,
+        "x": 790,
         "y": 920,
         "wires": [
             [
@@ -1386,6 +1386,7 @@
         "y": 920,
         "wires": [
             [
+                "8647ae25c3bc11f5",
                 "f1cea24b7884d9c7"
             ]
         ]
@@ -1413,11 +1414,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 560,
+        "x": 580,
         "y": 920,
         "wires": [
             [
-                "9f8662c1bd8adce2"
+                "2e0291c93f7b064d"
             ]
         ]
     },
@@ -1789,7 +1790,7 @@
         "type": "function",
         "z": "f32545335c110520",
         "name": "function 11",
-        "func": "msg.payload = msg.payload.ops[0];\nreturn msg;",
+        "func": "msg.payload = msg.payload[0];\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -2200,7 +2201,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 320,
+        "x": 360,
         "y": 920,
         "wires": [
             [
@@ -2290,6 +2291,178 @@
         "wires": [
             [
                 "131690a76c6d17ba"
+            ]
+        ]
+    },
+    {
+        "id": "8647ae25c3bc11f5",
+        "type": "debug",
+        "z": "f32545335c110520",
+        "name": "debug 23",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "req",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 280,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "2e0291c93f7b064d",
+        "type": "debug",
+        "z": "f32545335c110520",
+        "name": "debug 24",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "665f2521de90915c",
+        "type": "http in",
+        "z": "f32545335c110520",
+        "name": "",
+        "url": "/api/users/:phoneNumber/devices",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 1620,
+        "wires": [
+            [
+                "d0a68ea2d0edccf2"
+            ]
+        ]
+    },
+    {
+        "id": "a23b1173710761e9",
+        "type": "http response",
+        "z": "f32545335c110520",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1610,
+        "y": 1620,
+        "wires": []
+    },
+    {
+        "id": "d0a68ea2d0edccf2",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 20",
+        "func": "let phoneNumber = msg.req.params.phoneNumber;\nmsg.payload = {phoneNumber};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 1620,
+        "wires": [
+            [
+                "53e9c197a3ce40ed"
+            ]
+        ]
+    },
+    {
+        "id": "53e9c197a3ce40ed",
+        "type": "mongodb3 in",
+        "z": "f32545335c110520",
+        "service": "_ext_",
+        "configNode": "65180d6e6ac23d47",
+        "name": "GET SINGLE USER",
+        "collection": "users",
+        "operation": "findOne",
+        "x": 660,
+        "y": 1620,
+        "wires": [
+            [
+                "5d6b1d031470d871"
+            ]
+        ]
+    },
+    {
+        "id": "5d6b1d031470d871",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 21",
+        "func": "let deviceList= msg.payload.deviceList\nmsg.payload = { productId: {$in : deviceList}  };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 1620,
+        "wires": [
+            [
+                "ec6bebc3e940fd25"
+            ]
+        ]
+    },
+    {
+        "id": "a02c6605b48a9f1a",
+        "type": "debug",
+        "z": "f32545335c110520",
+        "name": "debug 25",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1560,
+        "y": 1680,
+        "wires": []
+    },
+    {
+        "id": "ec6bebc3e940fd25",
+        "type": "mongodb3 in",
+        "z": "f32545335c110520",
+        "service": "_ext_",
+        "configNode": "65180d6e6ac23d47",
+        "name": "GET  DEVICELIST DETAIL",
+        "collection": "sensor-metadata",
+        "operation": "find.toArray",
+        "x": 1180,
+        "y": 1620,
+        "wires": [
+            [
+                "a23b1173710761e9"
+            ]
+        ]
+    },
+    {
+        "id": "b63ec44e9e8188b3",
+        "type": "function",
+        "z": "f32545335c110520",
+        "name": "function 22",
+        "func": "// let list = []\n// for (let key of msg.payload) {\n//      list.push(msg.payload[key]);\n// }\n// msg.payload = list;\nmsg.payload = Object.values(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1430,
+        "y": 1620,
+        "wires": [
+            [
+                "a02c6605b48a9f1a"
             ]
         ]
     }
