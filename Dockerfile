@@ -14,6 +14,6 @@ RUN npm install cloudinary
 COPY settings.js /data/settings.js
 
 EXPOSE 1880
-
+EXPOSE 8005
 # Start Node-RED
 CMD ["npm", "start", "--", "--userDir", "/data"]
