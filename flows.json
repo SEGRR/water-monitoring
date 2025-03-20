@@ -250,7 +250,6 @@
         "y": 120,
         "wires": [
             [
-                "9d64a3ba765fa382",
                 "c1937969954d88b7"
             ]
         ]
@@ -278,98 +277,6 @@
         ]
     },
     {
-        "id": "9d64a3ba765fa382",
-        "type": "mongodb out",
-        "z": "7b83fea6115b1c9d",
-        "mongodb": "0545bec558c421e9",
-        "name": "insert to db",
-        "collection": "water-sensor-data",
-        "payonly": true,
-        "upsert": false,
-        "multi": false,
-        "operation": "insert",
-        "x": 630,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "dbb89dd4d81ea311",
-        "type": "mqtt in",
-        "z": "7b83fea6115b1c9d",
-        "name": "",
-        "topic": "water-sen-data",
-        "qos": "2",
-        "datatype": "auto-detect",
-        "broker": "76358c21918a49d0",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 160,
-        "y": 420,
-        "wires": [
-            [
-                "4906117e9b99f26b"
-            ]
-        ]
-    },
-    {
-        "id": "b8bcf664b2d35fc2",
-        "type": "debug",
-        "z": "7b83fea6115b1c9d",
-        "name": "debug 4",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 600,
-        "y": 440,
-        "wires": []
-    },
-    {
-        "id": "4906117e9b99f26b",
-        "type": "csv",
-        "z": "7b83fea6115b1c9d",
-        "name": "",
-        "spec": "rfc",
-        "sep": ",",
-        "hdrin": "",
-        "hdrout": "none",
-        "multi": "one",
-        "ret": "\\r\\n",
-        "temp": "",
-        "skip": "0",
-        "strings": true,
-        "include_empty_strings": "",
-        "include_null_values": "",
-        "x": 370,
-        "y": 420,
-        "wires": [
-            [
-                "b8bcf664b2d35fc2",
-                "69c32a1d665682d8"
-            ]
-        ]
-    },
-    {
-        "id": "69c32a1d665682d8",
-        "type": "mongodb out",
-        "z": "7b83fea6115b1c9d",
-        "mongodb": "0545bec558c421e9",
-        "name": "",
-        "collection": "sample",
-        "payonly": true,
-        "upsert": false,
-        "multi": false,
-        "operation": "insert",
-        "x": 670,
-        "y": 520,
-        "wires": []
-    },
-    {
         "id": "ef15404f77f51408",
         "type": "debug",
         "z": "7b83fea6115b1c9d",
@@ -378,7 +285,8 @@
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "false",
+        "complete": "payload",
+        "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
         "x": 340,
@@ -435,6 +343,132 @@
         "statusType": "auto",
         "x": 620,
         "y": 220,
+        "wires": []
+    },
+    {
+        "id": "65d939e1c12f4258",
+        "type": "tcp in",
+        "z": "7b83fea6115b1c9d",
+        "name": "",
+        "server": "server",
+        "host": "",
+        "port": "8005",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "",
+        "topic": "water-sen-data",
+        "trim": false,
+        "base64": false,
+        "tls": "",
+        "x": 120,
+        "y": 340,
+        "wires": [
+            [
+                "7649fcf9c0438613"
+            ]
+        ]
+    },
+    {
+        "id": "f3f2ef8db096be05",
+        "type": "debug",
+        "z": "7b83fea6115b1c9d",
+        "name": "debug 26",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "23198c687f4e1717",
+        "type": "inject",
+        "z": "7b83fea6115b1c9d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "#,20/03/2025,03:43:00,ABCD,Demo,60,1,80,150,$",
+        "payloadType": "str",
+        "x": 130,
+        "y": 480,
+        "wires": [
+            [
+                "95f5f4d482173acb"
+            ]
+        ]
+    },
+    {
+        "id": "95f5f4d482173acb",
+        "type": "tcp out",
+        "z": "7b83fea6115b1c9d",
+        "name": "",
+        "host": "localhost",
+        "port": "8005",
+        "beserver": "client",
+        "base64": false,
+        "end": false,
+        "tls": "",
+        "x": 370,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "7649fcf9c0438613",
+        "type": "function",
+        "z": "7b83fea6115b1c9d",
+        "name": "frameFormatter",
+        "func": "// Split the frame by commas to extract individual fields\nconst fields = msg.payload.split(',');\n\n// Ensure the frame has the expected number of fields\nif (fields.length !== 10) {\n    throw new Error('Invalid frame format');\n}\n\n// Extract the individual components\n\nconst date = fields[1];                   // Date (DD/MM/YYYY)\nconst time = fields[2];                   // Time (HH:MM:SS)\nconst productId = fields[3];              // Product ID\nconst deviceLabel = fields[4];            // Device Label\nconst gsmRange = parseInt(fields[5], 10); // GSM Range (Integer)\nconst slaveId = parseInt(fields[6], 10);  // Slave ID (Integer)\nconst currentFlow = parseInt(fields[7], 10); // Flow Rate (Integer)\nconst totalFlow = parseFloat(fields[8]); // Net Total Flow (Float)\n\n\n// Combine date and time into a single ISO 8601 format timestamp\nconst timestamp = new Date(`${date.split('/').reverse().join('-')}T${time}.000Z`);\n\n// Create the JSON object with the extracted data\nconst decodedData = {\n    \n    timestamp: timestamp, // Date object in ISO 8601 format\n    productId: productId,\n    deviceLabel: deviceLabel,\n    gsmRange: gsmRange,\n    slaveId: slaveId,\n    currentFlow: currentFlow,\n    totalFlow: totalFlow,\n};\n\nmsg.payload =  decodedData;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 340,
+        "wires": [
+            [
+                "f3f2ef8db096be05",
+                "9d64a3ba765fa382"
+            ]
+        ]
+    },
+    {
+        "id": "e8993db227ed167b",
+        "type": "comment",
+        "z": "7b83fea6115b1c9d",
+        "name": "Frame Format",
+        "info": "SOF(#),Date (DD/MM/YYYY),Time(HH:MM:SS),Product ID,Device Label, GSM Range, Slave ID, Flow Rate , Net Total Flow (Totalizer) ,EOF ($)\n\nsample frame\n#,20/03/2025,03:43:00,ABCD,Demo,60,1,80,150,$",
+        "x": 170,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "9d64a3ba765fa382",
+        "type": "mongodb out",
+        "z": "7b83fea6115b1c9d",
+        "mongodb": "0545bec558c421e9",
+        "name": "insert to db",
+        "collection": "water-sensor-data",
+        "payonly": true,
+        "upsert": false,
+        "multi": false,
+        "operation": "insert",
+        "x": 650,
+        "y": 400,
         "wires": []
     },
     {
